@@ -1,0 +1,29 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  .avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+  }
+
+  .print-page {
+    page-break-after: always;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color: black !important;
+  }
+}
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+
