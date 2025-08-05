@@ -1,3 +1,4 @@
+// ✅ Corrected & Cleaned Up
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,25 +20,19 @@ const DownloadPage = () => {
   const { templateId, resumeId } = useParams();
   const dispatch = useDispatch();
   const printRef = useRef();
-  const allResumes = useSelector((state) => state.resume.allResumes);
 
-  const resumeDataRaw = useSelector((state) => {
+  const resumeData = useSelector((state) => {
     if (resumeId) {
       return state.resume.allResumes.find((res) => res._id === resumeId);
     }
     return state.resume.data;
   });
 
-  const resumeData =
-    resumeDataRaw && typeof resumeDataRaw === "object"
-      ? JSON.parse(JSON.stringify(resumeDataRaw))
-      : null;
-
   useEffect(() => {
-    if (resumeId && !resumeDataRaw) {
+    if (resumeId && !resumeData) {
       dispatch(fetchSingleResume(resumeId));
     }
-  }, [dispatch, resumeId, resumeDataRaw]);
+  }, [dispatch, resumeId, resumeData]);
 
   const generatePDF = () => {
     const element = printRef.current;
@@ -48,13 +43,21 @@ const DownloadPage = () => {
 
     if (resumeData) {
       const userId = localStorage.getItem("userId");
-      if (!userId) return;
+      console.log("User ID from localStorage:", userId);
+
+      if (!userId) {
+        console.warn("⚠️ User ID not found in localStorage.");
+        return;
+      }
 
       const opt = {
         margin: 0,
         filename: "resume.pdf",
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+        },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
@@ -65,53 +68,39 @@ const DownloadPage = () => {
         }, 300);
       };
 
-      const matchedResume = allResumes.find((res) => res._id === resumeId);
-      const originalResume = matchedResume
-        ? JSON.parse(JSON.stringify(matchedResume))
-        : null;
-
-      const isEmailOrNameChanged =
-        originalResume &&
-        (originalResume.personalInfo?.email !==
-          resumeData.personalInfo?.email ||
-          originalResume.personalInfo?.name !== resumeData.personalInfo?.name);
-
-      if (resumeId && isEmailOrNameChanged) {
-        const { _id, ...cleanData } = resumeData;
-        dispatch(saveResume({ resumeData: cleanData, userId }))
-          .then((action) => {
-            if (action.payload && action.payload._id) {
-              window.history.replaceState(
-                null,
-                "",
-                `/download/${templateId}/${action.payload._id}`
-              );
-              downloadPDF();
-            }
-          })
-          .catch((err) => console.error("Error saving resume:", err));
-      } else if (resumeId) {
+      if (resumeId) {
         dispatch(updateResume({ resumeId, updatedData: resumeData }))
           .then((action) => {
             if (action.payload) {
               downloadPDF();
+            } else {
+              console.warn("⚠️ Resume update failed.");
             }
           })
-          .catch((err) => console.error("Error updating resume:", err));
+          .catch((err) => {
+            console.error("❌ Error updating resume:", err);
+          });
       } else {
         const { _id, ...cleanData } = resumeData;
+
+        // ✅ FIX: Pass userId separately instead of inside resumeData
         dispatch(saveResume({ resumeData: cleanData, userId }))
           .then((action) => {
             if (action.payload && action.payload._id) {
+              console.log("✅ Resume saved:", action.payload);
               window.history.replaceState(
                 null,
                 "",
-                `/download/${templateId}/${action.payload._id}`
+                `/download/template1/${action.payload._id}`
               );
               downloadPDF();
+            } else {
+              console.warn("⚠️ Resume save failed.");
             }
           })
-          .catch((err) => console.error("Error saving resume:", err));
+          .catch((err) => {
+            console.error("❌ Error saving resume:", err);
+          });
       }
     }
   };
