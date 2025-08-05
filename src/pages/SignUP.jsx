@@ -64,12 +64,12 @@ const Signup = () => {
 
         <p className="mt-4 text-sm text-center text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="font-medium text-blue-600 hover:underline"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>
