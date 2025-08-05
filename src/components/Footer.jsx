@@ -1,6 +1,7 @@
 import React from "react";
 import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import "../index.css"; // Ensure your styles are imported
+import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="py-8 mt-12 text-white bg-gray-800 no-print">
@@ -12,24 +13,24 @@ const Footer = () => {
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <ul>
               <li>
-                <a href="/" className="hover:text-blue-400">
+                <Link href="/" className="hover:text-blue-400">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about" className="hover:text-blue-400">
+                <Link href="/about" className="hover:text-blue-400">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services" className="hover:text-blue-400">
+                <Link href="/services" className="hover:text-blue-400">
                   Services
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="hover:text-blue-400">
+                <Link href="/contact" className="hover:text-blue-400">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
