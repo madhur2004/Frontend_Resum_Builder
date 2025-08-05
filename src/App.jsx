@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import AboutUs from "./pages/AboutUs"; // Importing AboutUs page
 import Services from "./pages/Services";
 import ContactUs from "./pages/ContactUs";
+import ScrollToTop from "./components/ScrollToTop"; // Importing ScrollToTop component
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
         <Header />
         {/* Main Content */}
         <main className="flex-grow">
+          <ScrollToTop /> {/* Scroll to top on route change */}
+          {/* Defining routes for the application */}
           <Routes>
             <Route path="/" element={<Home />} /> {/* Home route */}
             <Route path="/login" element={<Login />} /> {/* Login route */}
